@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "##p",
+    " #p"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "p": {
+      "item": "animated_arsenal:plastic"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:wooden_stock"
+  }
+}

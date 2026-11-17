@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "b#b",
+    " b "
+  ],
+  "key": {
+    "#": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    },
+    "b": {
+      "item": "animated_arsenal:long_barrel"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:multi_barrel"
+  }
+}

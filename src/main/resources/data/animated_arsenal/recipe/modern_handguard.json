@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "pp ",
+    "##p"
+  ],
+  "key": {
+    "#": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    },
+    "p": {
+      "item": "animated_arsenal:plastic"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:modern_handguard"
+  }
+}

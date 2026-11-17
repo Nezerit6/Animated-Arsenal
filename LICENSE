@@ -1,0 +1,17 @@
+Animated Arsenal
+Copyright (c) 2026 Nezerit6
+
+This mod is an adaptation of "Simple Animated Guns" by Elidhan
+(https://www.curseforge.com/minecraft/mc-mods/fabric-simple-animated-guns,
+https://github.com/elidhan/Simple-Animated-Guns), used under the
+Creative Commons Attribution 4.0 International License (CC BY 4.0).
+
+Changes: ported from Fabric 1.20.1 to NeoForge 1.21.1, rewritten code, renamed,
+and new features (see README.md). The gun models, animations, textures and
+sounds are Elidhan's work.
+
+Animated Arsenal is likewise licensed under the Creative Commons Attribution
+4.0 International License. To view a copy of this license, visit
+https://creativecommons.org/licenses/by/4.0/
+
+The licensor (Elidhan) does not endorse this adaptation. No warranties are given.

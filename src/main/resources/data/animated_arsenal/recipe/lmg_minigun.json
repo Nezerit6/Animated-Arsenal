@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  p",
+    "bIl",
+    " mi"
+  ],
+  "key": {
+    "b": {
+      "item": "animated_arsenal:multi_barrel"
+    },
+    "p": {
+      "item": "animated_arsenal:blueprint_lmg_minigun"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "i": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    },
+    "l": {
+      "item": "minecraft:lever"
+    },
+    "m": {
+      "item": "animated_arsenal:lmg_ammo_box"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:lmg_minigun"
+  }
+}

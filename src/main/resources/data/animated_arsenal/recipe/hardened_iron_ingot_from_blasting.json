@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "animated_arsenal:enriched_iron"
+  },
+  "result": {
+    "id": "animated_arsenal:hardened_iron_ingot"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

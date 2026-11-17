@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  p",
+    "bi ",
+    "mg "
+  ],
+  "key": {
+    "b": {
+      "item": "animated_arsenal:short_barrel"
+    },
+    "p": {
+      "item": "animated_arsenal:blueprint_revolver_magnum"
+    },
+    "i": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    },
+    "g": {
+      "item": "animated_arsenal:pistol_grip"
+    },
+    "m": {
+      "item": "animated_arsenal:revolver_chamber"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:revolver_magnum"
+  }
+}

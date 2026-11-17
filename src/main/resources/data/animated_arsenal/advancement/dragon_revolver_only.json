@@ -1,0 +1,11 @@
+{
+  "parent": "animated_arsenal:dragon_crystals_intact",
+  "display": {
+    "icon": { "id": "animated_arsenal:revolver_coltarmy" },
+    "title": { "translate": "advancements.animated_arsenal.dragon_revolver_only.title" },
+    "description": { "translate": "advancements.animated_arsenal.dragon_revolver_only.description" },
+    "frame": "challenge",
+    "hidden": true
+  },
+  "criteria": { "requirement": { "trigger": "minecraft:impossible" } }
+}

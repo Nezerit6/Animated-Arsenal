@@ -1,0 +1,37 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " #p",
+    "bis",
+    "fmg"
+  ],
+  "key": {
+    "b": {
+      "item": "animated_arsenal:long_barrel"
+    },
+    "p": {
+      "item": "animated_arsenal:blueprint_sniper_marksman"
+    },
+    "#": {
+      "item": "animated_arsenal:gun_scope"
+    },
+    "f": {
+      "item": "animated_arsenal:modern_handguard"
+    },
+    "i": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    },
+    "g": {
+      "item": "animated_arsenal:pistol_grip"
+    },
+    "s": {
+      "item": "animated_arsenal:modern_stock"
+    },
+    "m": {
+      "item": "animated_arsenal:rifle_magazine"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:sniper_marksman"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " n ",
+    " g ",
+    " i "
+  ],
+  "key": {
+    "n": {
+      "item": "animated_arsenal:hardened_iron_nugget"
+    },
+    "g": {
+      "item": "minecraft:gunpowder"
+    },
+    "i": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    }
+  },
+  "result": {
+    "count": 4,
+    "id": "animated_arsenal:heavy_handgun_cartridge"
+  }
+}

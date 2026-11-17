@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "gig",
+    "   "
+  ],
+  "key": {
+    "g": {
+      "item": "minecraft:glass"
+    },
+    "i": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:gun_scope"
+  }
+}

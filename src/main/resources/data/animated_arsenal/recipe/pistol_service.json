@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  p",
+    "bi ",
+    "mg "
+  ],
+  "key": {
+    "b": {
+      "item": "animated_arsenal:short_barrel"
+    },
+    "p": {
+      "item": "animated_arsenal:blueprint_pistol_service"
+    },
+    "i": {
+      "item": "animated_arsenal:hardened_iron_ingot"
+    },
+    "g": {
+      "item": "animated_arsenal:pistol_grip"
+    },
+    "m": {
+      "item": "animated_arsenal:pistol_magazine"
+    }
+  },
+  "result": {
+    "id": "animated_arsenal:pistol_service"
+  }
+}

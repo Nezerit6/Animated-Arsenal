@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "animated_arsenal:item/blueprint_lmg_m60"
+  }
+}
