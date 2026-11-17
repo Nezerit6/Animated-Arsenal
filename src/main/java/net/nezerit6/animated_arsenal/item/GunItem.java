@@ -759,7 +759,7 @@ public class GunItem extends Item implements GeoItem
     @Override
     public boolean isBarVisible(ItemStack stack)
     {
-        return true;
+        return remainingAmmo(stack) < magSize();
     }
 
     @Override

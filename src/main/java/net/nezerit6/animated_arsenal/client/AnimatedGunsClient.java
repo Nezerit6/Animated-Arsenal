@@ -362,6 +362,20 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
 
     private void onRenderHand(RenderHandEvent event)
     {
+        LocalPlayer self = Minecraft.getInstance().player;
+        if (self != null && holdingGun(self) && event.getHand() == InteractionHand.MAIN_HAND
+                && self.getMainArm() == net.minecraft.world.entity.HumanoidArm.LEFT && !isAimingScoped(self))
+        {
+            event.setCanceled(true);
+            com.mojang.blaze3d.vertex.PoseStack pose = event.getPoseStack();
+            pose.pushPose();
+            pose.translate(0.56F, -0.52F + event.getEquipProgress() * -0.6F, -0.72F);
+            Minecraft.getInstance().getEntityRenderDispatcher().getItemInHandRenderer().renderItem(self, event.getItemStack(),
+                    net.minecraft.world.item.ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, false, pose, event.getMultiBufferSource(), event.getPackedLight());
+            pose.popPose();
+            return;
+        }
+
         Player player = Minecraft.getInstance().player;
         if (!holdingGun(player)) return;
 

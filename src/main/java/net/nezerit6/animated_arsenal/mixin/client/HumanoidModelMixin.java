@@ -111,7 +111,7 @@ public abstract class HumanoidModelMixin<T extends LivingEntity>
             }
             case REVOLVER_FANNING ->
             {
-                mainArm.xRot = this.head.xRot - 1.0F;
+                mainArm.xRot = this.head.xRot - Mth.HALF_PI;
                 mainArm.yRot = this.head.yRot;
                 offArm.xRot = this.head.xRot - 1.0F;
                 offArm.yRot = this.head.yRot + 0.75F * side;
