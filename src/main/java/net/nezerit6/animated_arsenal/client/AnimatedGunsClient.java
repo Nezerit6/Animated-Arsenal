@@ -3,7 +3,6 @@ package net.nezerit6.animated_arsenal.client;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.nezerit6.animated_arsenal.AnimatedGuns;
-import net.nezerit6.animated_arsenal.client.render.BulletRenderer;
 import net.nezerit6.animated_arsenal.compat.CrawlCompat;
 import net.nezerit6.animated_arsenal.item.GunItem;
 import net.nezerit6.animated_arsenal.network.ModNetwork;
@@ -73,9 +72,8 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         });
         modBus.addListener(RegisterMenuScreensEvent.class, e ->
                 e.register(AnimatedGuns.BLUEPRINT_SCREEN_HANDLER_TYPE.get(), BlueprintScreen::new));
-        modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, e ->
-                e.registerEntityRenderer(AnimatedGuns.BULLET_ENTITY_TYPE.get(), BulletRenderer::new));
         NeoForge.EVENT_BUS.addListener(RenderLevelStageEvent.class, BulletHoles::render);
+        NeoForge.EVENT_BUS.addListener(RenderLevelStageEvent.class, BulletTracers::render);
         modBus.addListener(EntityRenderersEvent.AddLayers.class, e ->
         {
             for (net.minecraft.client.resources.PlayerSkin.Model skin : e.getSkins())
@@ -229,6 +227,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         DynamicLights.tick();
         GunSounds.tick();
         BulletHoles.tick();
+        BulletTracers.tick();
 
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && isAiming(player) && player.isSprinting())
@@ -335,21 +334,20 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
     }
 
     @Override
-    public void gunFired(int entityId)
+    public void gunFired(int entityId, java.util.List<org.joml.Vector3f> directions)
     {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
         net.minecraft.world.entity.Entity shooter = mc.level.getEntity(entityId);
-        if (shooter != null && shooter != mc.player)
+        if (shooter == null) return;
+        if (shooter != mc.player)
         {
             onShot(shooter);
         }
-    }
-
-    @Override
-    public void bulletLight(net.minecraft.world.entity.Entity bullet)
-    {
-        DynamicLights.track(bullet, 10.0);
+        if (!net.nezerit6.animated_arsenal.config.GunConfig.clientLoaded() || net.nezerit6.animated_arsenal.config.GunConfig.BULLET_TRACERS.get())
+        {
+            BulletTracers.spawn(shooter, directions);
+        }
     }
 
     private void onFov(ComputeFovModifierEvent event)

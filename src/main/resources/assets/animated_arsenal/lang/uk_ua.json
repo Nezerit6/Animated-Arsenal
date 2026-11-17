@@ -90,5 +90,8 @@
 	"advancements.animated_arsenal.dragon_crystals_intact.title": "Надмірна вогнева міць",
 	"advancements.animated_arsenal.dragon_crystals_intact.description": "Вбийте Дракона Енду зі зброї, не зруйнувавши жодного кристала Енду",
 	"advancements.animated_arsenal.dragon_revolver_only.title": "Рівно опівдні",
-	"advancements.animated_arsenal.dragon_revolver_only.description": "Вбийте Дракона Енду лише з револьвера, коли всі кристали Енду ще цілі"
+	"advancements.animated_arsenal.dragon_revolver_only.description": "Вбийте Дракона Енду лише з револьвера, коли всі кристали Енду ще цілі",
+	"death.attack.animated_arsenal.bullet": "%2$s застрелює %1$s",
+	"death.attack.animated_arsenal.bullet.player": "%2$s застрелює %1$s",
+	"death.attack.animated_arsenal.bullet.item": "%2$s застрелює %1$s з %3$s"
 }

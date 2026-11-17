@@ -90,5 +90,8 @@
 	"advancements.animated_arsenal.dragon_crystals_intact.title": "Overpowered Firepower",
 	"advancements.animated_arsenal.dragon_crystals_intact.description": "Kill the Ender Dragon with a gun without destroying a single End Crystal",
 	"advancements.animated_arsenal.dragon_revolver_only.title": "High Noon",
-	"advancements.animated_arsenal.dragon_revolver_only.description": "Kill the Ender Dragon using nothing but a revolver, with every End Crystal still standing"
+	"advancements.animated_arsenal.dragon_revolver_only.description": "Kill the Ender Dragon using nothing but a revolver, with every End Crystal still standing",
+	"death.attack.animated_arsenal.bullet": "%1$s was shot by %2$s",
+	"death.attack.animated_arsenal.bullet.player": "%1$s was shot by %2$s",
+	"death.attack.animated_arsenal.bullet.item": "%1$s was shot by %2$s using %3$s"
 }

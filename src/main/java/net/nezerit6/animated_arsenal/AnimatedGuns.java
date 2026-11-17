@@ -1,6 +1,5 @@
 package net.nezerit6.animated_arsenal;
 
-import net.nezerit6.animated_arsenal.entity.projectile.BulletProjectileEntity;
 import net.nezerit6.animated_arsenal.item.ModItems;
 import net.nezerit6.animated_arsenal.network.ModNetwork;
 import net.nezerit6.animated_arsenal.screen.BlueprintScreenHandler;
@@ -34,19 +33,11 @@ public class AnimatedGuns
 	public static final String MOD_ID = "animated_arsenal";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MOD_ID);
 	public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(Registries.MENU, MOD_ID);
 	public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MOD_ID);
 
 	public static final DeferredHolder<MenuType<?>, MenuType<BlueprintScreenHandler>> BLUEPRINT_SCREEN_HANDLER_TYPE =
 			MENU_TYPES.register("blueprint_screenhandler", () -> new MenuType<>(BlueprintScreenHandler::new, FeatureFlags.DEFAULT_FLAGS));
-
-	public static final DeferredHolder<EntityType<?>, EntityType<BulletProjectileEntity>> BULLET_ENTITY_TYPE =
-			ENTITY_TYPES.register("bullet", () -> EntityType.Builder.<BulletProjectileEntity>of(BulletProjectileEntity::new, MobCategory.MISC)
-					.sized(0.0625f, 0.0625f)
-					.clientTrackingRange(4)
-					.updateInterval(10)
-					.build(MOD_ID + ":bullet"));
 
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> GUNS = CREATIVE_TABS.register("guns", () -> CreativeModeTab.builder()
 			.title(Component.translatable("guns"))
@@ -79,10 +70,10 @@ public class AnimatedGuns
 		ModSounds.SOUNDS.register(modBus);
 		net.nezerit6.animated_arsenal.attribute.GunAttributes.ATTRIBUTES.register(modBus);
 		modBus.addListener(net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent.class, net.nezerit6.animated_arsenal.attribute.GunAttributes::addToEntities);
-		ENTITY_TYPES.register(modBus);
 		MENU_TYPES.register(modBus);
 		CREATIVE_TABS.register(modBus);
 		modBus.addListener(ModNetwork::register);
+		net.nezerit6.animated_arsenal.bullet.BulletManager.register();
 		net.nezerit6.animated_arsenal.advancement.DragonAdvancements.register();
 
 		NeoForge.EVENT_BUS.addListener(ItemTossEvent.class, event ->

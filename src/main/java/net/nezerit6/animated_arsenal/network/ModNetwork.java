@@ -35,9 +35,8 @@ public final class ModNetwork
         void bulletHole(BulletHole packet);
 
         void onShot(net.minecraft.world.entity.Entity shooter);
-        void gunFired(int entityId);
+        void gunFired(int entityId, java.util.List<org.joml.Vector3f> directions);
 
-        void bulletLight(net.minecraft.world.entity.Entity bullet);
         void gunInventoryTick(GunItem gun, ItemStack stack, net.minecraft.world.entity.player.Player player);
     }
 
@@ -84,10 +83,13 @@ public final class ModNetwork
         @Override public Type<Recoil> type() { return TYPE; }
     }
 
-    public record GunFired(int entityId) implements CustomPacketPayload
+    public record GunFired(int entityId, java.util.List<org.joml.Vector3f> directions) implements CustomPacketPayload
     {
         public static final Type<GunFired> TYPE = new Type<>(id("gun_fired"));
-        public static final StreamCodec<ByteBuf, GunFired> CODEC = ByteBufCodecs.VAR_INT.map(GunFired::new, GunFired::entityId);
+        public static final StreamCodec<ByteBuf, GunFired> CODEC = StreamCodec.composite(
+                ByteBufCodecs.VAR_INT, GunFired::entityId,
+                ByteBufCodecs.VECTOR3F.apply(ByteBufCodecs.list(64)), GunFired::directions,
+                GunFired::new);
         @Override public Type<GunFired> type() { return TYPE; }
     }
 
@@ -192,7 +194,7 @@ public final class ModNetwork
         });
         registrar.playToClient(GunFired.TYPE, GunFired.CODEC, (packet, ctx) ->
         {
-            if (CLIENT_HANDLER != null) CLIENT_HANDLER.gunFired(packet.entityId());
+            if (CLIENT_HANDLER != null) CLIENT_HANDLER.gunFired(packet.entityId(), packet.directions());
         });
         registrar.playToClient(BulletHole.TYPE, BulletHole.CODEC, (packet, ctx) ->
         {

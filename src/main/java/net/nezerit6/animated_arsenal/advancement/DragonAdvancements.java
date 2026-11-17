@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.nezerit6.animated_arsenal.AnimatedGuns;
-import net.nezerit6.animated_arsenal.entity.projectile.BulletProjectileEntity;
+    import net.nezerit6.animated_arsenal.bullet.GunDamageSource;
 import net.nezerit6.animated_arsenal.item.GunItem;
 import net.nezerit6.animated_arsenal.item.ModItems;
 
@@ -36,9 +36,9 @@ public final class DragonAdvancements
         NeoForge.EVENT_BUS.addListener(LivingDeathEvent.class, DragonAdvancements::onDeath);
     }
 
-    private static String weaponKind(Object direct)
+    private static String weaponKind(Object source)
     {
-        if (direct instanceof BulletProjectileEntity bullet)
+        if (source instanceof GunDamageSource bullet)
         {
             Item gun = bullet.getGun();
             if (gun == ModItems.MAGNUM_REVOLVER.get() || gun == ModItems.OLD_ARMY_REVOLVER.get()) return "revolver";
@@ -54,7 +54,7 @@ public final class DragonAdvancements
 
         DAMAGE_BY_DRAGON.computeIfAbsent(dragon.getUUID(), k -> new HashMap<>())
                 .computeIfAbsent(player.getUUID(), k -> new HashSet<>())
-                .add(weaponKind(event.getSource().getDirectEntity()));
+                .add(weaponKind(event.getSource()));
     }
 
     private static void onDeath(LivingDeathEvent event)
@@ -63,7 +63,7 @@ public final class DragonAdvancements
         Map<UUID, Set<String>> damage = DAMAGE_BY_DRAGON.remove(dragon.getUUID());
 
         if (!(event.getSource().getEntity() instanceof ServerPlayer killer)) return;
-        if (weaponKind(event.getSource().getDirectEntity()).equals("other")) return;
+        if (weaponKind(event.getSource()).equals("other")) return;
 
         EndDragonFight fight = dragon.getDragonFight();
         if (fight == null || fight.getCrystalsAlive() < PILLAR_CRYSTALS) return;

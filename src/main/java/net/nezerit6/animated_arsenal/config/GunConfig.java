@@ -30,6 +30,7 @@ public final class GunConfig
     public static ModConfigSpec.BooleanValue BULLET_HOLES;
     public static ModConfigSpec.IntValue BULLET_HOLE_SECONDS;
     public static ModConfigSpec.BooleanValue SCREEN_RECOIL;
+    public static ModConfigSpec.BooleanValue BULLET_TRACERS;
 
     private static final Map<GunItem, GunValues> GUNS = new HashMap<>();
 
@@ -88,6 +89,7 @@ public final class GunConfig
         BULLET_HOLES = c.comment("Bullet hole decals on blocks").define("bulletHoles", true);
         BULLET_HOLE_SECONDS = c.comment("How long bullet holes stay").defineInRange("bulletHoleSeconds", 30, 1, 600);
         SCREEN_RECOIL = c.comment("Camera kick when shooting").define("screenRecoil", true);
+        BULLET_TRACERS = c.comment("Visible bullet tracers").define("bulletTracers", true);
         CLIENT_SPEC = c.build();
     }
 

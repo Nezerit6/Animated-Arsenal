@@ -4,7 +4,6 @@ import net.nezerit6.animated_arsenal.AnimatedGuns;
 import net.nezerit6.animated_arsenal.attribute.GunAttributes;
 import net.nezerit6.animated_arsenal.config.GunConfig;
 import net.nezerit6.animated_arsenal.client.render.GunRenderer;
-import net.nezerit6.animated_arsenal.entity.projectile.BulletProjectileEntity;
 import net.nezerit6.animated_arsenal.network.ModNetwork;
 import net.nezerit6.animated_arsenal.util.BulletUtil;
 import net.nezerit6.animated_arsenal.util.GunData;
@@ -194,21 +193,17 @@ public class GunItem extends Item implements GeoItem
             float damage = Math.max(0.0f, (float) user.getAttributeValue(GunAttributes.GUN_DAMAGE) - this.gunDamage + damage());
             float spreadMult = getSpreadMult(itemStack);
 
+            java.util.List<org.joml.Vector3f> directions = new ArrayList<>();
             for (int i = 0; i < pelletCount(); i++)
             {
-                BulletProjectileEntity bullet = new BulletProjectileEntity(user, world, damage, pelletCount());
-                bullet.setPos(user.getX(), user.getEyeY(), user.getZ());
 
                 Vec3 vertiSpread = BulletUtil.vertiSpread(user, randomSpread(spreadV()) * spreadMult);
                 Vec3 horiSpread = BulletUtil.horiSpread(user, randomSpread(spreadH()) * spreadMult);
 
                 Vec3 result = user.getLookAngle().add(vertiSpread).add(horiSpread);
 
-                bullet.shoot(result.x(), result.y(), result.z(), (float) global(GunConfig.BULLET_SPEED, 20), 0);
-                bullet.setBaseVel(bullet.getDeltaMovement());
-                bullet.setGun(this);
-
-                world.addFreshEntity(bullet);
+                net.nezerit6.animated_arsenal.bullet.BulletManager.fire((ServerLevel) world, user, this, damage, pelletCount(), user.getEyePosition(), result);
+                directions.add(result.normalize().toVector3f());
             }
 
             playAnimation(user, itemStack, wasAiming ? "aim_firing" : "firing");
@@ -218,7 +213,7 @@ public class GunItem extends Item implements GeoItem
                 PacketDistributor.sendToPlayer(serverPlayer, new ModNetwork.Recoil(v_kick, h_kick));
             }
 
-            PacketDistributor.sendToPlayersTrackingEntity(user, new ModNetwork.GunFired(user.getId()));
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(user, new ModNetwork.GunFired(user.getId(), directions));
         }
         else if (ModNetwork.CLIENT_HANDLER != null)
         {
