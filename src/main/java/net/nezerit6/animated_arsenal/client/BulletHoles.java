@@ -66,6 +66,11 @@ public final class BulletHoles
         while (HOLES.size() > MAX_HOLES) HOLES.removeFirst();
     }
 
+    private static int lifetime()
+    {
+        return net.nezerit6.animated_arsenal.config.GunConfig.clientLoaded() ? net.nezerit6.animated_arsenal.config.GunConfig.BULLET_HOLE_SECONDS.get() * 20 : LIFETIME_TICKS;
+    }
+
     public static void tick()
     {
         ClientLevel level = Minecraft.getInstance().level;
@@ -81,7 +86,7 @@ public final class BulletHoles
         while (it.hasNext())
         {
             Hole hole = it.next();
-            if (ticks - hole.createdAt() > LIFETIME_TICKS || level.getBlockState(hole.pos()) != hole.state())
+            if (ticks - hole.createdAt() > lifetime() || level.getBlockState(hole.pos()) != hole.state())
             {
                 it.remove();
             }
@@ -110,7 +115,7 @@ public final class BulletHoles
             if (hole.center().distanceToSqr(cam) > 64 * 64) continue;
 
             long age = ticks - hole.createdAt();
-            float alpha = age > LIFETIME_TICKS - FADE_TICKS ? (LIFETIME_TICKS - age) / (float) FADE_TICKS : 1.0F;
+            float alpha = age > lifetime() - FADE_TICKS ? (lifetime() - age) / (float) FADE_TICKS : 1.0F;
             int a = Math.max(0, Math.min(255, (int) (alpha * 255)));
             int light = LevelRenderer.getLightColor(level, hole.pos().relative(hole.face()));
 

@@ -202,7 +202,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
             mc.gameMode.attack(player, hit.getEntity());
         }
 
-        player.getCooldowns().addCooldown(gunItem, GunItem.MELEE_COOLDOWN);
+        player.getCooldowns().addCooldown(gunItem, (net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() ? net.nezerit6.animated_arsenal.config.GunConfig.MELEE_COOLDOWN.get() : GunItem.MELEE_COOLDOWN));
     }
 
     private void onMovementInput(MovementInputUpdateEvent event)
@@ -300,7 +300,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null)
         {
-            player.turn(packet.hKick() * 5, -packet.kick() * 5);
+            if (!net.nezerit6.animated_arsenal.config.GunConfig.clientLoaded() || net.nezerit6.animated_arsenal.config.GunConfig.SCREEN_RECOIL.get()) player.turn(packet.hKick() * 5, -packet.kick() * 5);
         }
     }
 
@@ -323,7 +323,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
     @Override
     public void bulletHole(ModNetwork.BulletHole packet)
     {
-        BulletHoles.add(packet.location(), packet.face(), packet.pos());
+        if (!net.nezerit6.animated_arsenal.config.GunConfig.clientLoaded() || net.nezerit6.animated_arsenal.config.GunConfig.BULLET_HOLES.get()) BulletHoles.add(packet.location(), packet.face(), packet.pos());
     }
 
     @Override
@@ -331,7 +331,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
     {
         GunArmAnimations.onShot(shooter);
 
-        DynamicLights.flash(shooter.getEyePosition().add(shooter.getLookAngle()), 15.0, 4);
+        if (!net.nezerit6.animated_arsenal.config.GunConfig.clientLoaded() || net.nezerit6.animated_arsenal.config.GunConfig.DYNAMIC_LIGHTS.get()) DynamicLights.flash(shooter.getEyePosition().add(shooter.getLookAngle()), 15.0, 4);
     }
 
     @Override

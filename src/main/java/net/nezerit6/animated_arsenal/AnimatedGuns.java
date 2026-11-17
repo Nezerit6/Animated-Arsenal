@@ -66,8 +66,15 @@ public class AnimatedGuns
 			.displayItems((params, output) -> ModItems.ATTACHMENTS_TAB_ITEMS.forEach(i -> output.accept(i.get())))
 			.build());
 
-	public AnimatedGuns(IEventBus modBus)
+	public AnimatedGuns(IEventBus modBus, net.neoforged.fml.ModContainer container)
 	{
+		modBus.addListener(net.neoforged.bus.api.EventPriority.LOWEST, net.neoforged.neoforge.registries.RegisterEvent.class, e ->
+		{
+			if (!e.getRegistryKey().equals(Registries.ITEM)) return;
+			net.nezerit6.animated_arsenal.config.GunConfig.build();
+			container.registerConfig(net.neoforged.fml.config.ModConfig.Type.SERVER, net.nezerit6.animated_arsenal.config.GunConfig.SERVER_SPEC);
+			container.registerConfig(net.neoforged.fml.config.ModConfig.Type.CLIENT, net.nezerit6.animated_arsenal.config.GunConfig.CLIENT_SPEC);
+		});
 		ModItems.ITEMS.register(modBus);
 		ModSounds.SOUNDS.register(modBus);
 		net.nezerit6.animated_arsenal.attribute.GunAttributes.ATTRIBUTES.register(modBus);
@@ -91,7 +98,7 @@ public class AnimatedGuns
 
 		NeoForge.EVENT_BUS.addListener(LivingSwapItemsEvent.Hands.class, event ->
 		{
-			if (event.getItemSwappedToOffHand().getItem() instanceof GunItem)
+			if (event.getItemSwappedToOffHand().getItem() instanceof GunItem && !(net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() && net.nezerit6.animated_arsenal.config.GunConfig.ALLOW_OFFHAND.get()))
 			{
 				event.setCanceled(true);
 			}
@@ -103,7 +110,7 @@ public class AnimatedGuns
 			if (player.level().isClientSide()) return;
 
 			ItemStack offhand = player.getOffhandItem();
-			if (offhand.getItem() instanceof GunItem)
+			if (offhand.getItem() instanceof GunItem && !(net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() && net.nezerit6.animated_arsenal.config.GunConfig.ALLOW_OFFHAND.get()))
 			{
 				player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
 				if (!player.getInventory().add(offhand))

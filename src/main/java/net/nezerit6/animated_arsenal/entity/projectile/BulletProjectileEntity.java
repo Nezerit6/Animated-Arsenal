@@ -69,7 +69,8 @@ public class BulletProjectileEntity extends AbstractArrow
             this.setDeltaMovement(this.vel);
         }
 
-        if (this.lifeTicks++ >= this.maxLife)
+        int life = net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() ? net.nezerit6.animated_arsenal.config.GunConfig.BULLET_LIFETIME.get() : this.maxLife;
+        if (this.lifeTicks++ >= life)
         {
             this.discard();
         }
@@ -120,14 +121,14 @@ public class BulletProjectileEntity extends AbstractArrow
 
         if (this.level() instanceof ServerLevel serverLevel)
         {
-            if (state.is(BULLET_BREAKABLE))
+            if (state.is(BULLET_BREAKABLE) && (!net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() || net.nezerit6.animated_arsenal.config.GunConfig.BREAK_GLASS.get()))
             {
                 if (this.mayBreak(serverLevel, pos, state)) serverLevel.destroyBlock(pos, true, this.getOwner());
             }
             else
             {
                 float volume = this.pelletGroupCount > 1 ? Mth.clamp(1.0f / (float) this.pelletGroupCount, 0.2f, 1.0f) : 1.0f;
-                serverLevel.playSound(null, pos, state.getSoundType(serverLevel, pos, this).getBreakSound(), SoundSource.BLOCKS, volume, 1.0f);
+                if (!net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() || net.nezerit6.animated_arsenal.config.GunConfig.IMPACT_SOUNDS.get()) serverLevel.playSound(null, pos, state.getSoundType(serverLevel, pos, this).getBreakSound(), SoundSource.BLOCKS, volume, 1.0f);
 
                 Vec3 hit = blockHitResult.getLocation();
                 PacketDistributor.sendToPlayersNear(serverLevel, null, hit.x, hit.y, hit.z, 96,

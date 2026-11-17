@@ -171,7 +171,7 @@ public final class ModNetwork
             if (net.nezerit6.animated_arsenal.compat.CrawlCompat.isCrawling(player)) return;
 
             GunData.putBoolean(stack, "isAiming", false);
-            player.getCooldowns().addCooldown(gun, GunItem.MELEE_COOLDOWN);
+            player.getCooldowns().addCooldown(gun, (net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() ? net.nezerit6.animated_arsenal.config.GunConfig.MELEE_COOLDOWN.get() : GunItem.MELEE_COOLDOWN));
 
             gun.playAnimation(player, stack, "melee");
         }));

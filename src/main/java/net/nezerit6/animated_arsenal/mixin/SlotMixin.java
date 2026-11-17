@@ -22,7 +22,7 @@ public abstract class SlotMixin
     @Inject(method = "mayPlace", at = @At("HEAD"), cancellable = true)
     private void animated_arsenal$noGunsInOffhand(ItemStack stack, CallbackInfoReturnable<Boolean> cir)
     {
-        if (this.container instanceof Inventory && this.getContainerSlot() == Inventory.SLOT_OFFHAND && stack.getItem() instanceof GunItem)
+        if (this.container instanceof Inventory && this.getContainerSlot() == Inventory.SLOT_OFFHAND && stack.getItem() instanceof GunItem && !(net.nezerit6.animated_arsenal.config.GunConfig.serverLoaded() && net.nezerit6.animated_arsenal.config.GunConfig.ALLOW_OFFHAND.get()))
         {
             cir.setReturnValue(false);
         }

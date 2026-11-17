@@ -2,6 +2,7 @@ package net.nezerit6.animated_arsenal.item;
 
 import net.nezerit6.animated_arsenal.AnimatedGuns;
 import net.nezerit6.animated_arsenal.attribute.GunAttributes;
+import net.nezerit6.animated_arsenal.config.GunConfig;
 import net.nezerit6.animated_arsenal.client.render.GunRenderer;
 import net.nezerit6.animated_arsenal.entity.projectile.BulletProjectileEntity;
 import net.nezerit6.animated_arsenal.network.ModNetwork;
@@ -159,10 +160,10 @@ public class GunItem extends Item implements GeoItem
 
         if (hand == InteractionHand.MAIN_HAND)
         {
-            if (!user.getCooldowns().isOnCooldown(this) && !user.isSprinting() && isLoaded(stack))
+            if (isEnabled() && !user.getCooldowns().isOnCooldown(this) && !user.isSprinting() && isLoaded(stack))
             {
                 this.shoot(world, user, stack);
-                user.getCooldowns().addCooldown(this, this.rateOfFire);
+                user.getCooldowns().addCooldown(this, rateOfFire());
             }
         }
         return InteractionResultHolder.fail(stack);
@@ -190,20 +191,20 @@ public class GunItem extends Item implements GeoItem
 
         if (!world.isClientSide())
         {
-            float damage = (float) user.getAttributeValue(GunAttributes.GUN_DAMAGE);
+            float damage = Math.max(0.0f, (float) user.getAttributeValue(GunAttributes.GUN_DAMAGE) - this.gunDamage + damage());
             float spreadMult = getSpreadMult(itemStack);
 
-            for (int i = 0; i < this.pelletCount; i++)
+            for (int i = 0; i < pelletCount(); i++)
             {
-                BulletProjectileEntity bullet = new BulletProjectileEntity(user, world, damage, this.pelletCount);
+                BulletProjectileEntity bullet = new BulletProjectileEntity(user, world, damage, pelletCount());
                 bullet.setPos(user.getX(), user.getEyeY(), user.getZ());
 
-                Vec3 vertiSpread = BulletUtil.vertiSpread(user, randomSpread(bulletSpread[0]) * spreadMult);
-                Vec3 horiSpread = BulletUtil.horiSpread(user, randomSpread(bulletSpread[1]) * spreadMult);
+                Vec3 vertiSpread = BulletUtil.vertiSpread(user, randomSpread(spreadV()) * spreadMult);
+                Vec3 horiSpread = BulletUtil.horiSpread(user, randomSpread(spreadH()) * spreadMult);
 
                 Vec3 result = user.getLookAngle().add(vertiSpread).add(horiSpread);
 
-                bullet.shoot(result.x(), result.y(), result.z(), 20, 0);
+                bullet.shoot(result.x(), result.y(), result.z(), (float) global(GunConfig.BULLET_SPEED, 20), 0);
                 bullet.setBaseVel(bullet.getDeltaMovement());
                 bullet.setGun(this);
 
@@ -224,10 +225,10 @@ public class GunItem extends Item implements GeoItem
             ModNetwork.CLIENT_HANDLER.onShot(user);
         }
 
-        if (!user.getAbilities().instabuild)
+        if (!user.getAbilities().instabuild && !(GunConfig.serverLoaded() && GunConfig.INFINITE_AMMO.get()))
         {
             GunData.putInt(itemStack, "Clip", GunData.getInt(itemStack, "Clip") - 1);
-            itemStack.setDamageValue(this.getMaxDamage(itemStack) - ((GunData.getInt(itemStack, "Clip") * 10) + 1));
+            itemStack.setDamageValue(0);
         }
 
         world.playSound(null, user.getX(), user.getY(), user.getZ(), shootSound.get(), SoundSource.MASTER, 1.0f, 1.0f);
@@ -336,14 +337,14 @@ public class GunItem extends Item implements GeoItem
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag)
     {
-        tooltip.add(Component.translatable("tooltip.animated_arsenal.ammo", GunData.getInt(stack, "Clip"), this.magSize).withStyle(ChatFormatting.WHITE));
+        tooltip.add(Component.translatable("tooltip.animated_arsenal.ammo", GunData.getInt(stack, "Clip"), magSize()).withStyle(ChatFormatting.WHITE));
         if (flag.hasShiftDown())
         {
-            double recoil = Math.sqrt((this.gunRecoil[0] * this.gunRecoil[0]) + (this.gunRecoil[1] * this.gunRecoil[1]));
-            tooltip.add(Component.translatable("tooltip.animated_arsenal.damage", String.format(java.util.Locale.ROOT, "%.1f", this.gunDamage)).withStyle(ChatFormatting.GRAY));
+            double recoil = Math.sqrt((recoilX() * recoilX()) + (recoilY() * recoilY()));
+            tooltip.add(Component.translatable("tooltip.animated_arsenal.damage", String.format(java.util.Locale.ROOT, "%.1f", damage())).withStyle(ChatFormatting.GRAY));
             tooltip.add(Component.translatable("tooltip.animated_arsenal.recoil", String.format(java.util.Locale.ROOT, "%.2f", recoil)).withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("tooltip.animated_arsenal.rpm", (int) (((float) 20 / this.rateOfFire) * 60)).withStyle(ChatFormatting.GRAY));
-            tooltip.add(Component.translatable("tooltip.animated_arsenal.reload_time", String.format(java.util.Locale.ROOT, "%.2f", this.reloadCooldown / 20.0f)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.animated_arsenal.rpm", (int) (((float) 20 / rateOfFire()) * 60)).withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.animated_arsenal.reload_time", String.format(java.util.Locale.ROOT, "%.2f", reloadCooldown() / 20.0f)).withStyle(ChatFormatting.GRAY));
         }
         tooltip.add(Component.translatable("tooltip.animated_arsenal.uses").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable(this.ammoType.get().getDescriptionId()).withStyle(ChatFormatting.YELLOW));
@@ -383,8 +384,8 @@ public class GunItem extends Item implements GeoItem
         {
             if (mainHandGun != stack
                     || (reserveAmmoCount(player, this.ammoType.get()) <= 0 && this.reloadCycles <= 1)
-                    || (GunData.getInt(stack, "reloadTick") >= this.reloadCooldown)
-                    || (remainingAmmo(stack) >= this.magSize && this.reloadCycles <= 1))
+                    || (GunData.getInt(stack, "reloadTick") >= reloadCooldown())
+                    || (remainingAmmo(stack) >= magSize() && this.reloadCycles <= 1))
                 GunData.putBoolean(stack, "isReloading", false);
 
             this.doReloadTick(world, player, stack);
@@ -392,7 +393,7 @@ public class GunItem extends Item implements GeoItem
         else
         {
             int tick = GunData.getInt(stack, "reloadTick");
-            if (tick > this.reloadStage3 && tick <= this.reloadCooldown) finishReload(player, stack);
+            if (tick > this.reloadStage3 && tick <= reloadCooldown()) finishReload(player, stack);
 
             GunData.putBoolean(stack, "isReloading", false);
             GunData.putInt(stack, "reloadTick", 0);
@@ -424,7 +425,7 @@ public class GunItem extends Item implements GeoItem
         {
             case MAGAZINE ->
             {
-                if (rTick >= this.reloadCooldown && reserveAmmoCount(player, this.ammoType.get()) > 0)
+                if (rTick >= reloadCooldown() && reserveAmmoCount(player, this.ammoType.get()) > 0)
                 {
                     GunData.putInt(stack, "currentCycle", 1);
                     finishReload(player, stack);
@@ -439,12 +440,12 @@ public class GunItem extends Item implements GeoItem
                 {
                     GunData.putInt(stack, "Clip", GunData.getInt(stack, "Clip") + 1);
                     InventoryUtil.removeItemFromInventory(player, this.ammoType.get(), 1);
-                    if (remainingAmmo(stack) < this.magSize && reserveAmmoCount(player, this.ammoType.get()) > 0)
+                    if (remainingAmmo(stack) < magSize() && reserveAmmoCount(player, this.ammoType.get()) > 0)
                     {
                         GunData.putInt(stack, "reloadTick", this.reloadStage2);
                     }
                     GunData.putInt(stack, "currentCycle", GunData.getInt(stack, "Clip"));
-                    stack.setDamageValue(this.getMaxDamage(stack) - ((GunData.getInt(stack, "Clip") * 10) + 1));
+                    stack.setDamageValue(0);
                 }
             }
         }
@@ -454,13 +455,13 @@ public class GunItem extends Item implements GeoItem
     {
         boolean rd = this.random.nextBoolean();
         return (GunData.getBoolean(stack, "isAiming") ?
-                (rd ? this.gunRecoil[0] : -this.gunRecoil[0]) / 2 :
-                (rd ? this.gunRecoil[0] : -this.gunRecoil[0])) * getRecoilMult(stack);
+                (rd ? recoilX() : -recoilX()) / 2 :
+                (rd ? recoilX() : -recoilX())) * getRecoilMult(stack);
     }
 
     public float getRecoilY(ItemStack stack)
     {
-        return (GunData.getBoolean(stack, "isAiming") ? this.gunRecoil[1] / 2 : this.gunRecoil[1]) * getRecoilMult(stack);
+        return (GunData.getBoolean(stack, "isAiming") ? recoilY() / 2 : recoilY()) * getRecoilMult(stack);
     }
 
     public float getRecoilMult(ItemStack stack)
@@ -485,7 +486,7 @@ public class GunItem extends Item implements GeoItem
     public void finishReload(Player player, ItemStack stack)
     {
         int clip = GunData.getInt(stack, "Clip");
-        int ammoToLoad = this.magSize - clip;
+        int ammoToLoad = magSize() - clip;
         int reserve = reserveAmmoCount(player, this.ammoType.get());
 
         if (reserve >= ammoToLoad)
@@ -499,7 +500,7 @@ public class GunItem extends Item implements GeoItem
             InventoryUtil.removeItemFromInventory(player, this.ammoType.get(), reserve);
         }
 
-        stack.setDamageValue(this.getMaxDamage(stack) - ((GunData.getInt(stack, "Clip") * 10) + 1));
+        stack.setDamageValue(0);
     }
 
     public void aimAnimation(ItemStack stack, boolean aim, Player player)
@@ -606,7 +607,7 @@ public class GunItem extends Item implements GeoItem
 
     public int getMagSize()
     {
-        return this.magSize;
+        return magSize();
     }
 
     public Item getAmmoType()
@@ -621,7 +622,7 @@ public class GunItem extends Item implements GeoItem
 
     public float getVerticalRecoil()
     {
-        return this.gunRecoil[1];
+        return recoilY();
     }
 
     @Override
@@ -662,7 +663,7 @@ public class GunItem extends Item implements GeoItem
 
     public int getRateOfFire()
     {
-        return this.rateOfFire;
+        return rateOfFire();
     }
 
     public boolean shouldUnscopeAfterShot()
@@ -677,8 +678,96 @@ public class GunItem extends Item implements GeoItem
 
     public FiringType getFiringType()
     {
-        return this.firingType;
+        return firingType();
     }
+
+    private GunConfig.GunValues cfg()
+    {
+        return GunConfig.of(this);
+    }
+
+    private static double global(net.neoforged.neoforge.common.ModConfigSpec.DoubleValue value, double fallback)
+    {
+        return GunConfig.serverLoaded() ? value.get() : fallback;
+    }
+
+    public float damage()
+    {
+        return (float) ((cfg() != null ? cfg().damage().get() : this.gunDamage) * global(GunConfig.DAMAGE_MULTIPLIER, 1));
+    }
+
+    public int rateOfFire()
+    {
+        return Math.max(1, (int) Math.round((cfg() != null ? cfg().fireRate().get() : this.rateOfFire) * global(GunConfig.FIRE_RATE_MULTIPLIER, 1)));
+    }
+
+    public int magSize()
+    {
+        return cfg() != null ? cfg().magazine().get() : this.magSize;
+    }
+
+    public int reloadCooldown()
+    {
+        int base = cfg() != null ? cfg().reloadTime().get() : this.reloadCooldown;
+        return Math.max(this.reloadStage3 + 1, (int) Math.round(base * global(GunConfig.RELOAD_TIME_MULTIPLIER, 1)));
+    }
+
+    public int pelletCount()
+    {
+        return cfg() != null ? cfg().pellets().get() : this.pelletCount;
+    }
+
+    private float spreadV()
+    {
+        return (float) ((cfg() != null ? cfg().spreadVertical().get() : this.bulletSpread[0]) * global(GunConfig.SPREAD_MULTIPLIER, 1));
+    }
+
+    private float spreadH()
+    {
+        return (float) ((cfg() != null ? cfg().spreadHorizontal().get() : this.bulletSpread[1]) * global(GunConfig.SPREAD_MULTIPLIER, 1));
+    }
+
+    private float recoilX()
+    {
+        return (float) ((cfg() != null ? cfg().recoilHorizontal().get() : this.gunRecoil[0]) * global(GunConfig.RECOIL_MULTIPLIER, 1));
+    }
+
+    private float recoilY()
+    {
+        return (float) ((cfg() != null ? cfg().recoilVertical().get() : this.gunRecoil[1]) * global(GunConfig.RECOIL_MULTIPLIER, 1));
+    }
+
+    private FiringType firingType()
+    {
+        return cfg() != null ? cfg().firingMode().get() : this.firingType;
+    }
+
+    public boolean isEnabled()
+    {
+        return cfg() == null || cfg().enabled().get();
+    }
+
+    public float baseDamage() { return this.gunDamage; }
+    public int baseRateOfFire() { return this.rateOfFire; }
+    public int baseMagSize() { return this.magSize; }
+    public int baseReloadCooldown() { return this.reloadCooldown; }
+    public int basePelletCount() { return this.pelletCount; }
+    public float[] baseSpread() { return this.bulletSpread; }
+    public float[] baseRecoil() { return this.gunRecoil; }
+    public FiringType getBaseFiringType() { return this.firingType; }
+
+    @Override
+    public boolean isBarVisible(ItemStack stack)
+    {
+        return true;
+    }
+
+    @Override
+    public int getBarWidth(ItemStack stack)
+    {
+        return Math.round(13.0f * Mth.clamp(remainingAmmo(stack) / (float) magSize(), 0.0f, 1.0f));
+    }
+
 
     public ArmType getArmType()
     {
