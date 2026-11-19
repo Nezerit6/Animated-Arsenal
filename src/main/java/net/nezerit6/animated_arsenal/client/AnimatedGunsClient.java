@@ -56,6 +56,23 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
     public static final KeyMapping reloadToggle = new KeyMapping("key.animated_arsenal.reloadtoggle", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, "category.animated_arsenal.binds");
     public static final KeyMapping meleeKey = new KeyMapping("key.animated_arsenal.melee", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, "category.animated_arsenal.binds");
 
+    private static final net.neoforged.neoforge.client.settings.IKeyConflictContext HOLDING_GUN = new net.neoforged.neoforge.client.settings.IKeyConflictContext()
+    {
+        @Override
+        public boolean isActive()
+        {
+            return Minecraft.getInstance().screen == null && holdingGun(Minecraft.getInstance().player);
+        }
+
+        @Override
+        public boolean conflicts(net.neoforged.neoforge.client.settings.IKeyConflictContext other)
+        {
+            return other == this;
+        }
+    };
+    public static final KeyMapping shootKey = new KeyMapping("key.animated_arsenal.shoot", HOLDING_GUN, InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_LEFT, "category.animated_arsenal.binds");
+    public static final KeyMapping aimKey = new KeyMapping("key.animated_arsenal.aim", HOLDING_GUN, InputConstants.Type.MOUSE, GLFW.GLFW_MOUSE_BUTTON_RIGHT, "category.animated_arsenal.binds");
+
     private static final ResourceLocation GUN_SCOPE = ResourceLocation.fromNamespaceAndPath(AnimatedGuns.MOD_ID, "textures/misc/gun_scope.png");
     private float gunScopeScale = 0.5f;
 
@@ -69,6 +86,8 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         {
             e.register(reloadToggle);
             e.register(meleeKey);
+            e.register(shootKey);
+            e.register(aimKey);
         });
         modBus.addListener(RegisterMenuScreensEvent.class, e ->
                 e.register(AnimatedGuns.BLUEPRINT_SCREEN_HANDLER_TYPE.get(), BlueprintScreen::new));
@@ -137,7 +156,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         if (mc.screen != null) return;
 
         boolean framed = false;
-        while (mc.options.keyUse.consumeClick())
+        while (aimKey.consumeClick())
         {
             if (mc.hitResult instanceof EntityHitResult hit && hit.getEntity() instanceof net.minecraft.world.entity.decoration.ItemFrame frame)
             {
@@ -152,7 +171,7 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
 
         if (this.aimRequestCooldown > 0) this.aimRequestCooldown--;
         boolean wantAim = !framed
-                && mc.options.keyUse.isDown()
+                && aimKey.isDown()
                 && !GunData.getBoolean(gun, "isReloading")
                 && !(gunItem.shouldUnscopeAfterShot() && player.getCooldowns().isOnCooldown(gunItem));
         if (wantAim != GunData.getBoolean(gun, "isAiming") && this.aimRequestCooldown <= 0)
@@ -163,8 +182,8 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         }
 
         boolean fire = false;
-        while (mc.options.keyAttack.consumeClick()) fire = true;
-        if (gunItem.getFiringType() == GunItem.FiringType.AUTO && mc.options.keyAttack.isDown()) fire = true;
+        while (shootKey.consumeClick()) fire = true;
+        if (gunItem.getFiringType() == GunItem.FiringType.AUTO && shootKey.isDown()) fire = true;
 
         if (fire && !player.isUsingItem())
         {
@@ -307,7 +326,8 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
     public void gunAnim(ModNetwork.GunAnim packet)
     {
         if (!(BuiltInRegistries.ITEM.get(packet.item()) instanceof GunItem gun)) return;
-        GunSounds.onAnimation(gun, packet.instanceId(), packet.animation(), packet.holderId());
+        String animation = resolveAnimation(gun, packet.animation());
+        GunSounds.onAnimation(gun, packet.instanceId(), animation, packet.holderId());
         if ("melee".equals(packet.animation()) && Minecraft.getInstance().level != null)
         {
             net.minecraft.world.entity.Entity holder = Minecraft.getInstance().level.getEntity(packet.holderId());
@@ -316,7 +336,17 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         AnimationController<?> controller = controller(gun, packet.instanceId());
         if (controller == null) return;
         controller.forceAnimationReset();
-        controller.tryTriggerAnimation(packet.animation());
+        controller.tryTriggerAnimation(animation);
+    }
+
+    private static String resolveAnimation(GunItem gun, String name)
+    {
+        if (!name.startsWith("aim_")) return name;
+        ResourceLocation file = ResourceLocation.fromNamespaceAndPath(AnimatedGuns.MOD_ID, "animations/" + gun.getAnimationID() + ".animation.json");
+        software.bernie.geckolib.loading.object.BakedAnimations baked = software.bernie.geckolib.cache.GeckoLibCache.getBakedAnimations().get(file);
+        if (baked == null || baked.getAnimation(name) != null) return name;
+        String plain = name.substring("aim_".length());
+        return baked.getAnimation(plain) != null ? plain : name;
     }
 
     @Override

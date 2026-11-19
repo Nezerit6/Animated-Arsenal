@@ -21,6 +21,7 @@
 * Bullet holes on blocks.
 * Third-person recoil kick and stock bash animations.
 * Crawl compatibility: prone aiming/shooting with movement blocked, prone reload, long guns slung on the back.
+* Rebindable Shoot and Aim keys (default: left/right mouse button).
 
 ## Configuration
 

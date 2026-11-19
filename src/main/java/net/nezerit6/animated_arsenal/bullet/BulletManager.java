@@ -107,7 +107,7 @@ public final class BulletManager
 
         Vec3 start = b.pos;
         Vec3 end = start.add(b.velocity);
-        if (!level.isLoaded(BlockPos.containing(end))) return false;
+        if (!level.hasChunk(net.minecraft.core.SectionPos.blockToSectionCoord(end.x), net.minecraft.core.SectionPos.blockToSectionCoord(end.z))) return false;
 
         BlockHitResult blockHit = level.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, b.owner));
         Vec3 limit = blockHit.getType() != HitResult.Type.MISS ? blockHit.getLocation() : end;
