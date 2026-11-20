@@ -1,0 +1,139 @@
+{
+  "format_version": "1.8.0",
+  "geckolib_format_version": 2,
+  "animations": {
+    "reload_lmg": {
+      "animation_length": 3,
+      "player_animation_library": {
+        "author": "Nezerit6",
+        "description": "Machine gun: top cover, new box and belt, slam, charge"
+      },
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0.2": {
+              "vector": [-30, -10, 0],
+              "easing": "easeOutQuad"
+            },
+            "1.5": {
+              "vector": [-32, -12, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.25": {
+              "vector": [-34, -10, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.3": {
+              "vector": [-30, -10, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.6": {
+              "vector": [-38, -10, 0],
+              "easing": "easeOutQuad"
+            },
+            "2.75": {
+              "vector": [-30, -10, 0],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0.2": {
+              "vector": [-50, 25, 0],
+              "easing": "easeOutQuad"
+            },
+            "0.4": {
+              "vector": [-80, 20, 0],
+              "easing": "easeOutQuad"
+            },
+            "0.55": {
+              "vector": [-75, 20, 0],
+              "easing": "easeInOutSine"
+            },
+            "0.7": {
+              "vector": [-35, 25, 0],
+              "easing": "easeOutQuad"
+            },
+            "0.85": {
+              "vector": [5, -5, -20],
+              "easing": "easeOutQuad"
+            },
+            "1.05": {
+              "vector": [15, -10, -12],
+              "easing": "easeInOutSine"
+            },
+            "1.25": {
+              "vector": [10, -10, -12],
+              "easing": "easeInOutSine"
+            },
+            "1.5": {
+              "vector": [-40, 28, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.65": {
+              "vector": [-45, 30, 0],
+              "easing": "easeOutQuad"
+            },
+            "1.8": {
+              "vector": [-60, 22, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.95": {
+              "vector": [-62, 24, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.1": {
+              "vector": [-85, 15, 0],
+              "easing": "easeOutQuad"
+            },
+            "2.25": {
+              "vector": [-55, 22, 0],
+              "easing": "easeInQuad"
+            },
+            "2.35": {
+              "vector": [-50, 24, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.5": {
+              "vector": [-45, 15, -5],
+              "easing": "easeInOutSine"
+            },
+            "2.6": {
+              "vector": [-40, 10, -5],
+              "easing": "easeOutQuad"
+            },
+            "2.75": {
+              "vector": [-45, 25, 0],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "head": {
+          "rotation": {
+            "0.25": {
+              "vector": [22, 0, 0],
+              "easing": "easeInOutSine"
+            },
+            "0.85": {
+              "vector": [10, -15, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.1": {
+              "vector": [25, -10, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.5": {
+              "vector": [24, 0, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.6": {
+              "vector": [10, 0, 0],
+              "easing": "easeInOutSine"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -89,6 +89,8 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
             e.register(shootKey);
             e.register(aimKey);
         });
+        modBus.addListener(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent.class, e -> e.enqueueWork(PlayerAnims::registerLayer));
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, e -> PlayerAnims.tick());
         modBus.addListener(RegisterMenuScreensEvent.class, e ->
                 e.register(AnimatedGuns.BLUEPRINT_SCREEN_HANDLER_TYPE.get(), BlueprintScreen::new));
         NeoForge.EVENT_BUS.addListener(RenderLevelStageEvent.class, BulletHoles::render);
@@ -332,6 +334,11 @@ public class AnimatedGunsClient implements ModNetwork.ClientHandler
         {
             net.minecraft.world.entity.Entity holder = Minecraft.getInstance().level.getEntity(packet.holderId());
             if (holder != null && holder != Minecraft.getInstance().player) GunArmAnimations.onMelee(holder);
+        }
+        if (("reload_start".equals(packet.animation()) || "aim_reload_start".equals(packet.animation())) && Minecraft.getInstance().level != null)
+        {
+            net.minecraft.world.entity.Entity holder = Minecraft.getInstance().level.getEntity(packet.holderId());
+            if (holder != null) PlayerAnims.onReloadStart(holder, gun);
         }
         AnimationController<?> controller = controller(gun, packet.instanceId());
         if (controller == null) return;

@@ -75,7 +75,10 @@ public abstract class HumanoidModelMixin<T extends LivingEntity>
             return;
         }
 
-        if (reloading || sprinting || !GunItem.isLoaded(stack)) return;
+        if (sprinting || (!reloading && !GunItem.isLoaded(stack))) return;
+        float raise = reloading && !GunItem.isLoaded(stack)
+                ? Mth.clamp((GunData.getInt(stack, "reloadTick") + (ageInTicks - Mth.floor(ageInTicks))) / 10.0F, 0.0F, 1.0F) : 1.0F;
+        float[] before = raise < 1.0F ? animated_arsenal$capture() : null;
 
         float side = rightHanded ? 1.0F : -1.0F;
         HumanoidModel<?> model = (HumanoidModel<?>) (Object) this;
@@ -127,16 +130,20 @@ public abstract class HumanoidModelMixin<T extends LivingEntity>
         mainArm.zRot = 0.0F;
         offArm.zRot = 0.0F;
 
-        if (GunData.getBoolean(stack, "isAiming"))
+        float aim = GunArmAnimations.aimWeight(player, GunData.getBoolean(stack, "isAiming"), ageInTicks);
+        if (aim > 0.0F)
         {
-            offArm.xRot = this.head.xRot - Mth.HALF_PI;
-            offArm.yRot = this.head.yRot + 0.5F * side;
-            mainArm.x *= 0.7F;
-            mainArm.z *= 0.7F;
-            offArm.x *= 0.8F;
-            offArm.z *= 0.8F;
+            offArm.xRot = animated_arsenal$rotLerp(aim, offArm.xRot, this.head.xRot - Mth.HALF_PI);
+            offArm.yRot = animated_arsenal$rotLerp(aim, offArm.yRot, this.head.yRot + 0.5F * side);
+            float mainScale = Mth.lerp(aim, 1.0F, 0.7F);
+            float offScale = Mth.lerp(aim, 1.0F, 0.8F);
+            mainArm.x *= mainScale;
+            mainArm.z *= mainScale;
+            offArm.x *= offScale;
+            offArm.z *= offScale;
         }
 
+        if (before != null) animated_arsenal$blendFrom(before, raise);
 
         float recoil = GunArmAnimations.recoil(player, ageInTicks);
         if (recoil > 0.0F)
@@ -201,6 +208,44 @@ public abstract class HumanoidModelMixin<T extends LivingEntity>
         part.zRot = animated_arsenal$rotLerp(t, part.zRot, zRot);
         part.yRot = animated_arsenal$rotLerp(t, part.yRot, yRot);
         part.xRot = animated_arsenal$rotLerp(t, part.xRot, xRot);
+    }
+
+    @Unique
+    private ModelPart[] animated_arsenal$posedParts()
+    {
+        return new ModelPart[]{this.rightArm, this.leftArm, this.rightLeg, this.leftLeg, this.body};
+    }
+
+    @Unique
+    private float[] animated_arsenal$capture()
+    {
+        ModelPart[] parts = animated_arsenal$posedParts();
+        float[] out = new float[parts.length * 5];
+        for (int i = 0; i < parts.length; i++)
+        {
+            ModelPart p = parts[i];
+            out[i * 5] = p.xRot;
+            out[i * 5 + 1] = p.yRot;
+            out[i * 5 + 2] = p.zRot;
+            out[i * 5 + 3] = p.x;
+            out[i * 5 + 4] = p.z;
+        }
+        return out;
+    }
+
+    @Unique
+    private void animated_arsenal$blendFrom(float[] from, float t)
+    {
+        ModelPart[] parts = animated_arsenal$posedParts();
+        for (int i = 0; i < parts.length; i++)
+        {
+            ModelPart p = parts[i];
+            p.xRot = animated_arsenal$rotLerp(t, from[i * 5], p.xRot);
+            p.yRot = animated_arsenal$rotLerp(t, from[i * 5 + 1], p.yRot);
+            p.zRot = animated_arsenal$rotLerp(t, from[i * 5 + 2], p.zRot);
+            p.x = Mth.lerp(t, from[i * 5 + 3], p.x);
+            p.z = Mth.lerp(t, from[i * 5 + 4], p.z);
+        }
     }
 
     @Unique

@@ -1,0 +1,131 @@
+{
+  "format_version": "1.8.0",
+  "geckolib_format_version": 2,
+  "animations": {
+    "reload_revolver": {
+      "animation_length": 2.4,
+      "player_animation_library": {
+        "author": "Nezerit6",
+        "description": "Revolver: dump the brass, speedloader, flick the cylinder shut"
+      },
+      "bones": {
+        "right_arm": {
+          "rotation": {
+            "0.15": {
+              "vector": [-60, -30, 0],
+              "easing": "easeOutQuad"
+            },
+            "0.35": {
+              "vector": [-60, -30, -25],
+              "easing": "easeOutQuad"
+            },
+            "0.55": {
+              "vector": [-115, -20, -10],
+              "easing": "easeOutQuad"
+            },
+            "0.75": {
+              "vector": [-115, -20, -10],
+              "easing": "easeInOutSine"
+            },
+            "0.9": {
+              "vector": [-45, -25, -15],
+              "easing": "easeOutQuad"
+            },
+            "1.6": {
+              "vector": [-45, -25, -15],
+              "easing": "easeInOutSine"
+            },
+            "1.8": {
+              "vector": [-62, -30, 8],
+              "easing": "easeOutQuad"
+            },
+            "1.9": {
+              "vector": [-60, -30, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.05": {
+              "vector": [-62, -28, 0],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "left_arm": {
+          "rotation": {
+            "0.15": {
+              "vector": [-45, 35, 0],
+              "easing": "easeOutQuad"
+            },
+            "0.35": {
+              "vector": [-55, 45, 0],
+              "easing": "easeInOutSine"
+            },
+            "0.6": {
+              "vector": [-95, 35, 0],
+              "easing": "easeOutQuad"
+            },
+            "0.75": {
+              "vector": [-100, 38, 0],
+              "easing": "easeInOutSine"
+            },
+            "0.9": {
+              "vector": [-20, 10, -10],
+              "easing": "easeOutQuad"
+            },
+            "1.05": {
+              "vector": [15, -5, -10],
+              "easing": "easeInOutSine"
+            },
+            "1.2": {
+              "vector": [12, -5, -10],
+              "easing": "easeInOutSine"
+            },
+            "1.4": {
+              "vector": [-50, 40, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.55": {
+              "vector": [-55, 42, 0],
+              "easing": "easeOutQuad"
+            },
+            "1.6": {
+              "vector": [-50, 40, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.75": {
+              "vector": [-30, 20, -8],
+              "easing": "easeOutQuad"
+            },
+            "1.9": {
+              "vector": [-45, 35, 0],
+              "easing": "easeInOutSine"
+            },
+            "2.05": {
+              "vector": [-48, 30, 0],
+              "easing": "easeInOutSine"
+            }
+          }
+        },
+        "head": {
+          "rotation": {
+            "0.2": {
+              "vector": [18, 0, 0],
+              "easing": "easeInOutSine"
+            },
+            "0.55": {
+              "vector": [2, 0, 0],
+              "easing": "easeInOutSine"
+            },
+            "0.9": {
+              "vector": [22, 0, 0],
+              "easing": "easeInOutSine"
+            },
+            "1.8": {
+              "vector": [10, 0, 0],
+              "easing": "easeInOutSine"
+            }
+          }
+        }
+      }
+    }
+  }
+}

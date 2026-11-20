@@ -763,6 +763,20 @@ public class GunItem extends Item implements GeoItem
         return Math.round(13.0f * Mth.clamp(remainingAmmo(stack) / (float) magSize(), 0.0f, 1.0f));
     }
 
+    public int getReloadStage2()
+    {
+        return this.reloadStage2;
+    }
+
+    public int getReloadStage3()
+    {
+        return this.reloadStage3;
+    }
+
+    public LoadingType getLoadingType()
+    {
+        return this.loadingType;
+    }
 
     public ArmType getArmType()
     {

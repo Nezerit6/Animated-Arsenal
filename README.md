@@ -9,6 +9,7 @@
 
 * Minecraft 1.21.1, NeoForge 21.1.x
 * [GeckoLib](https://modrinth.com/mod/geckolib) 4.9.3 or newer for NeoForge 1.21.1
+* [Player Animation Library](https://modrinth.com/mod/player-animation-library) 1.1.6 or newer for NeoForge 1.21.1 (client only)
 * Optional: [Crawl](https://github.com/fewizz/crawl) (prone shooting)
 
 ## What this port changes
